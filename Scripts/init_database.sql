@@ -1,6 +1,6 @@
 /*
 ========================================
-Create Database and Schemas (MySql Equivalent)
+Create Database and Schemas 
 ========================================
 Script Purpose:
   This script creates a new databse named 'DataWarehouse' after checking if it already exists. If the 
@@ -13,25 +13,33 @@ WARNING:
   before running this script.
 */
 
--- Drop the DataWarehouse database if it already exists  
-DROP DATABASE IF EXISTS `DataWarehouse`;
+-- Create Database 'DataWarehouse'
 
--- Recreate it  
-CREATE DATABASE `DataWarehouse`;
+-- 1) Create the database in its own batch
+USE master;
+GO
 
+-- Drop and recreate the 'DataWarehouse' database
+IF EXISTS (SELECT 1 FROM sys.databases WHERE name = 'DataWarehouse')
+BEGIN
+    ALTER DATABASE DataWarehouse SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE DataWarehouse;
+END;
+GO
+
+CREATE DATABASE DataWarehouse;
+GO
+
+-- 2) Switch to it in its own batch
 USE DataWarehouse;
+GO
 
--- bronze layer table (raw)
-CREATE TABLE bronze (
-    _placeholder INT    
-);
+-- 3) Create your schemas
+CREATE SCHEMA bronze;
+GO
 
--- silver layer table (cleaned/enriched)
-CREATE TABLE silver (
-    _placeholder INT 
-);
+CREATE SCHEMA silver;
+GO
 
--- gold layer table (business‑ready)
-CREATE TABLE gold (
-    _placeholder INT 
-);
+CREATE SCHEMA gold;
+GO
